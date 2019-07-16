@@ -31,13 +31,25 @@ class WidgetBtn extends Element {
   setUnreadCount(count) {
     count = parseInt(count);
     this._setContent(this.unread, count > 9 ? MAX_COUNT : count.toString());
-    (count > 0) ? show(this.unread) : hide(this.unread);
+    if (count > 0) {
+      show(this.unread);
+    } else {
+      hide(this.unread);
+    }
   }
 
   toggleIcon(isConnected) {
-    isConnected ?
-      addClass(removeClass(this.self, className.IC_LOGIN), className.IC_CONNECTED) :
-      addClass(removeClass(this.self, className.IC_CONNECTED), className.IC_LOGIN);
+    if (isConnected) {
+      addClass(
+        removeClass(this.self, className.IC_LOGIN),
+        className.IC_CONNECTED
+      );
+    } else {
+      addClass(
+        removeClass(this.self, className.IC_CONNECTED),
+        className.IC_LOGIN
+      );
+    }
   }
 }
 

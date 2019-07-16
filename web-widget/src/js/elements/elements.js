@@ -86,6 +86,7 @@ class Element {
   _setBackgroundImage(target, url) {
     target.style.cssText += `background-image: url(${url});`;
   }
+
   _setBackgroundSize(target, size) {
     target.style.cssText += `background-size: ${size};`;
   }

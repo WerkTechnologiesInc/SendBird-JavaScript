@@ -39,7 +39,9 @@ window.WebFontConfig = {
 };
 
 class SBWidget {
-  constructor() {}
+  constructor() {
+    this.filter = null;
+  }
 
   start(appId) {
     if (!window.SendBird) {
@@ -78,13 +80,21 @@ class SBWidget {
     }
   }
 
+  setFilter(options) {
+    this.filter = options;
+  }
+
   _initClickEvent(event) {
-    var _checkPopup = function(_target, obj) {
-      if (obj === _target || hasClass(_target, className.IC_MEMBERS) || hasClass(_target, className.IC_INVITE)) {
+    const _checkPopup = function (_target, obj) {
+      if (
+        obj === _target ||
+        hasClass(_target, className.IC_MEMBERS) ||
+        hasClass(_target, className.IC_INVITE)
+      ) {
         return true;
       } else {
-        var returnedCheck = false;
-        for (var i = 0; i < obj.childNodes.length; i++) {
+        let returnedCheck = false;
+        for (let i = 0; i < obj.childNodes.length; i++) {
           returnedCheck = _checkPopup(_target, obj.childNodes[i]);
           if (returnedCheck) break;
         }
@@ -116,6 +126,7 @@ class SBWidget {
         this.time = date;
         this.type = TIME_MESSAGE_TYPE;
       }
+
       isTimeMessage() {
         return this.type == TIME_MESSAGE_TYPE;
       }
@@ -126,19 +137,19 @@ class SBWidget {
   }
 
   _getGoogleFont() {
-    var wf = document.createElement('script');
+    let wf = document.createElement('script');
     wf.src =
       ('https:' == document.location.protocol ? 'https' : 'http') +
       '://ajax.googleapis.com/ajax/libs/webfont/1.5.18/webfont.js';
     wf.type = 'text/javascript';
     wf.async = 'true';
-    var s = document.getElementsByTagName('script')[0];
+    let s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(wf, s);
   }
 
   reset() {
     this.extraChannelSetList = [];
-    for (var i = 0; i < this.activeChannelSetList.length; i++) {
+    for (let i = 0; i < this.activeChannelSetList.length; i++) {
       let channelSet = this.activeChannelSetList[i];
       let targetBoard = this.chatSection.getChatBoard(channelSet.channel.url);
       if (targetBoard) {
@@ -163,7 +174,9 @@ class SBWidget {
         if (this.extraChannelSetList.indexOf(extraChannelSet.channel.url) < 0) {
           this.extraChannelSetList.push(extraChannelSet.channel.url);
         }
-        let chatBoard = this.chatSection.getChatBoard(extraChannelSet.channel.url);
+        let chatBoard = this.chatSection.getChatBoard(
+          extraChannelSet.channel.url
+        );
         if (chatBoard) {
           this.chatSection.closeChatBoard(chatBoard);
         }
@@ -198,18 +211,25 @@ class SBWidget {
     });
 
     this.widgetBtn.addClickEvent(() => {
-      this.sb.isConnected() ? this.listBoard.showChannelList() : this.listBoard.showLoginForm();
+      if (this.sb.isConnected()) {
+        this.listBoard.showChannelList();
+      } else {
+        this.listBoard.showLoginForm();
+      }
       this.toggleBoard(true);
       this.listBoard.addChannelListScrollEvent(() => {
         this.getChannelList();
       });
-      this.chatSection.responsiveSize(false, this.responsiveChatSection.bind(this));
+      this.chatSection.responsiveSize(
+        false,
+        this.responsiveChatSection.bind(this)
+      );
     });
 
     this.listBoard.addNewChatClickEvent(() => {
       this.listBoard.hideLogoutBtn();
 
-      var chatBoard = this.chatSection.createChatBoard(NEW_CHAT_BOARD_ID);
+      const chatBoard = this.chatSection.createChatBoard(NEW_CHAT_BOARD_ID);
       this.responsiveChatSection(null, true);
 
       this.chatSection.createNewChatBoard(chatBoard);
@@ -218,7 +238,9 @@ class SBWidget {
           addClass(chatBoard.startBtn, className.DISABLED);
           this.sb.userListQuery = null;
           this.spinner.insert(chatBoard.startBtn);
-          let selectedUserIds = this.chatSection.getSelectedUserIds(chatBoard.userContent);
+          let selectedUserIds = this.chatSection.getSelectedUserIds(
+            chatBoard.userContent
+          );
           this.sb.createNewChannel(selectedUserIds, channel => {
             chatBoard.parentNode.removeChild(chatBoard);
             this._connectChannel(channel.url, true);
@@ -227,6 +249,13 @@ class SBWidget {
         }
       });
       this.spinner.insert(chatBoard.userContent);
+
+      if (this.filter) {
+        this.sb.getUserList(userList => {
+          this.spinner.remove(chatBoard.userContent);
+          this.setUserList(chatBoard, userList);
+        }, this.filter);
+      }
 
       this.sb.getUserList(userList => {
         this.spinner.remove(chatBoard.userContent);
@@ -240,14 +269,17 @@ class SBWidget {
       });
       hide(chatBoard.leaveBtn);
       hide(chatBoard.memberBtn);
-      hide(chatBoard.inviteBtn);
+      // hide(chatBoard.inviteBtn);
     });
 
     this.listBoard.addMinimizeClickEvent(() => {
       this.listBoard.hideLogoutBtn();
       this.closePopup();
       this.toggleBoard(false);
-      this.chatSection.responsiveSize(true, this.responsiveChatSection.bind(this));
+      this.chatSection.responsiveSize(
+        true,
+        this.responsiveChatSection.bind(this)
+      );
     });
 
     this.listBoard.addLogoutClickEvent(() => {
@@ -284,7 +316,10 @@ class SBWidget {
       this._connect(cookie.userId, cookie.nickname);
       this.listBoard.showChannelList();
       this.toggleBoard(true);
-      this.chatSection.responsiveSize(false, this.responsiveChatSection.bind(this));
+      this.chatSection.responsiveSize(
+        false,
+        this.responsiveChatSection.bind(this)
+      );
     }
   }
 
@@ -312,7 +347,10 @@ class SBWidget {
         channel => {
           let targetBoard = this.chatSection.getChatBoard(channel.url);
           if (targetBoard) {
-            let isBottom = this.chatSection.isBottom(targetBoard.messageContent, targetBoard.list);
+            let isBottom = this.chatSection.isBottom(
+              targetBoard.messageContent,
+              targetBoard.list
+            );
             this.chatSection.showTyping(channel, this.spinner);
             this.chatSection.responsiveHeight(channel.url);
             if (isBottom) {
@@ -323,7 +361,7 @@ class SBWidget {
         channel => {
           let targetBoard = this.chatSection.getChatBoard(channel.url);
           if (targetBoard) {
-            var channelSet = this.getChannelSet(channel.url);
+            let channelSet = this.getChannelSet(channel.url);
             if (channelSet) {
               this.chatSection.updateReadReceipt(channelSet, targetBoard);
             }
@@ -335,7 +373,10 @@ class SBWidget {
             this.listBoard.list.removeChild(item);
             this.listBoard.checkEmptyList();
           } else {
-            this.listBoard.setChannelTitle(channel.url, this.sb.getNicknamesString(channel));
+            this.listBoard.setChannelTitle(
+              channel.url,
+              this.sb.getNicknamesString(channel)
+            );
             this.updateUnreadMessageCount(channel);
             let targetChatBoard = this.chatSection.getChatBoard(channel.url);
             if (targetChatBoard) {
@@ -344,16 +385,48 @@ class SBWidget {
           }
         },
         (channel, user) => {
-          this.listBoard.setChannelTitle(channel.url, this.sb.getNicknamesString(channel));
+          this.listBoard.setChannelTitle(
+            channel.url,
+            this.sb.getNicknamesString(channel)
+          );
           let targetChatBoard = this.chatSection.getChatBoard(channel.url);
           if (targetChatBoard) {
             this.updateChannelInfo(targetChatBoard, channel);
           }
+        },
+        channel => {
+          this.userInvitedAction(channel);
         }
       );
 
       if (callback) callback();
     });
+  }
+
+  userInvitedAction(channel) {
+    let target = this.listBoard.getChannelItem(channel.url);
+    if (!target) {
+      target = this.createChannelItem(channel);
+      this.listBoard.checkEmptyList();
+    }
+    this.listBoard.addListOnFirstIndex(target);
+    this.showChannel(channel.url);
+
+    let targetBoard = this.chatSection.getChatBoard(channel.url);
+
+    if (!targetBoard) {
+      if ('Notification' in window) {
+        let notification = new Notification('Channel created', {
+          body: channel.lastMessage ? channel.lastMessage.message : '',
+          icon:
+            'http://qnimate.com/wp-content/uploads/2014/07/web-notification-api-300x150.jpg'
+        });
+        notification.onclick = function () {
+          window.focus();
+        };
+        this.notificationSound.play();
+      }
+    }
   }
 
   messageReceivedAction(channel, message) {
@@ -366,27 +439,43 @@ class SBWidget {
 
     this.listBoard.setChannelLastMessage(
       channel.url,
-      message.isFileMessage() ? xssEscape(message.name) : xssEscape(message.message)
+      message.isFileMessage()
+        ? xssEscape(message.name)
+        : xssEscape(message.message)
     );
-    this.listBoard.setChannelLastMessageTime(channel.url, this.sb.getMessageTime(message));
+    this.listBoard.setChannelLastMessageTime(
+      channel.url,
+      this.sb.getMessageTime(message)
+    );
 
     let targetBoard = this.chatSection.getChatBoard(channel.url);
     if (targetBoard) {
-      let isBottom = this.chatSection.isBottom(targetBoard.messageContent, targetBoard.list);
+      let isBottom = this.chatSection.isBottom(
+        targetBoard.messageContent,
+        targetBoard.list
+      );
       let channelSet = this.getChannelSet(channel.url);
       let lastMessage = getLastItem(channelSet.message);
       channelSet.message.push(message);
-      this.setMessageItem(channelSet.channel, targetBoard, [message], false, isBottom, lastMessage);
+      this.setMessageItem(
+        channelSet.channel,
+        targetBoard,
+        [message],
+        false,
+        isBottom,
+        lastMessage
+      );
       channel.markAsRead();
       this.updateUnreadMessageCount(channel);
     }
     if (!targetBoard) {
       if ('Notification' in window) {
-        var notification = new Notification('New Message', {
+        let notification = new Notification('New Message', {
           body: message.isFileMessage() ? message.name : message.message,
-          icon: 'http://qnimate.com/wp-content/uploads/2014/07/web-notification-api-300x150.jpg'
+          icon:
+            'http://qnimate.com/wp-content/uploads/2014/07/web-notification-api-300x150.jpg'
         });
-        notification.onclick = function() {
+        notification.onclick = function () {
           window.focus();
         };
         this.notificationSound.play();
@@ -417,10 +506,14 @@ class SBWidget {
         this.listBoard.addListOnFirstIndex(target);
         this.listBoard.setChannelLastMessage(
           channel.url,
-          message.isFileMessage() ? xssEscape(message.name) : xssEscape(message.message)
+          message.isFileMessage()
+            ? xssEscape(message.name)
+            : xssEscape(message.message)
         );
       }
-      let updatedMessage = document.getElementById(`${message.messageId}`).querySelector('div>div>div.text');
+      let updatedMessage = document
+        .getElementById(`${message.messageId}`)
+        .querySelector('div>div>div.text');
       if (updatedMessage) {
         updatedMessage.innerHTML = message.message;
       }
@@ -443,7 +536,9 @@ class SBWidget {
         this.listBoard.addListOnFirstIndex(target);
         this.listBoard.setChannelLastMessage(
           channel.url,
-          lastMessage.isFileMessage() ? xssEscape(lastMessage.name) : xssEscape(lastMessage.message)
+          lastMessage.isFileMessage()
+            ? xssEscape(lastMessage.name)
+            : xssEscape(lastMessage.message)
         );
       } else {
         let newMessages = channelSet.message.filter(msg => {
@@ -458,25 +553,36 @@ class SBWidget {
   }
 
   setUserList(target, userList) {
+    let user;
     let userContent = target.userContent;
     this.chatSection.createUserList(userContent);
-    for (var i = 0; i < userList.length; i++) {
-      let user = userList[i];
+    for (let i = 0; i < userList.length; i++) {
+      user = userList[i];
       if (!this.sb.isCurrentUser(user)) {
         let item = this.chatSection.createUserListItem(user);
         this.chatSection.addClickEvent(item, () => {
-          hasClass(item.select, className.ACTIVE)
-            ? removeClass(item.select, className.ACTIVE)
-            : addClass(item.select, className.ACTIVE);
-          let selectedUserCount = this.chatSection.getSelectedUserIds(userContent.list).length;
-          this.chatSection.updateChatTop(
-            target,
-            selectedUserCount > 9 ? MAX_COUNT : selectedUserCount.toString(),
-            null
-          );
-          selectedUserCount > 0
-            ? removeClass(target.startBtn, className.DISABLED)
-            : addClass(target.startBtn, className.DISABLED);
+          if (hasClass(item.select, className.ACTIVE)) {
+            removeClass(item.select, className.ACTIVE);
+          } else {
+            addClass(item.select, className.ACTIVE);
+          }
+          let selectedUserCount = this.chatSection.getSelectedUserIds(
+            userContent.list
+          ).length;
+          if (selectedUserCount > 9) {
+            this.chatSection.updateChatTop(target, MAX_COUNT, null);
+          } else {
+            this.chatSection.updateChatTop(
+              target,
+              selectedUserCount.toString(),
+              null
+            );
+          }
+          if (selectedUserCount > 0) {
+            removeClass(target.startBtn, className.DISABLED);
+          } else {
+            addClass(target.startBtn, className.DISABLED);
+          }
         });
         userContent.list.appendChild(item);
       }
@@ -502,6 +608,8 @@ class SBWidget {
       this.updateUnreadMessageCount();
       this.listBoard.checkEmptyList();
     });
+
+    this.toggleBoard(true);
   }
 
   createChannelItem(channel) {
@@ -518,7 +626,7 @@ class SBWidget {
       let channelUrl = item.getAttribute('data-channel-url');
       let openChatBoard = this.chatSection.getChatBoard(channelUrl);
       if (!openChatBoard) {
-        var newChat = this.chatSection.getChatBoard(NEW_CHAT_BOARD_ID);
+        let newChat = this.chatSection.getChatBoard(NEW_CHAT_BOARD_ID);
         if (newChat) {
           this.chatSection.closeChatBoard(newChat);
         }
@@ -539,10 +647,10 @@ class SBWidget {
   }
 
   closeInvitePopup() {
-    this.chatSection.removeInvitePopup();
+    // this.chatSection.removeInvitePopup();
     this.popup.closeInvitePopup();
 
-    var chatBoard = this.chatSection.getChatBoard(NEW_CHAT_BOARD_ID);
+    let chatBoard = this.chatSection.getChatBoard(NEW_CHAT_BOARD_ID);
     if (!chatBoard) {
       this.sb.userListQuery = null;
     }
@@ -550,10 +658,11 @@ class SBWidget {
 
   showChannel(channelUrl) {
     this._connectChannel(channelUrl, false);
+    console.log(channelUrl);
   }
 
   _connectChannel(channelUrl, doNotCall) {
-    var chatBoard = this.chatSection.createChatBoard(channelUrl, doNotCall);
+    let chatBoard = this.chatSection.createChatBoard(channelUrl, doNotCall);
     if (!doNotCall) {
       this.responsiveChatSection(channelUrl, true);
     }
@@ -565,21 +674,24 @@ class SBWidget {
     });
     this.chatSection.addClickEvent(chatBoard.leaveBtn, () => {
       this.chatSection.addLeavePopup(chatBoard);
-      this.chatSection.setLeaveBtnClickEvent(chatBoard.leavePopup.leaveBtn, () => {
-        this.spinner.insert(chatBoard.leavePopup.leaveBtn);
-        addClass(chatBoard.leavePopup.leaveBtn, className.DISABLED);
-        let channelSet = this.getChannelSet(channelUrl);
-        if (channelSet) {
-          this.sb.channelLeave(channelSet.channel, () => {
-            chatBoard.removeChild(chatBoard.leavePopup);
-            removeClass(chatBoard.leavePopup.leaveBtn, className.DISABLED);
-            chatBoard.leavePopup = null;
-            chatBoard.closeBtn.click();
-          });
-        } else {
-          this.chatSection.closeChatBoard(chatBoard);
+      this.chatSection.setLeaveBtnClickEvent(
+        chatBoard.leavePopup.leaveBtn,
+        () => {
+          this.spinner.insert(chatBoard.leavePopup.leaveBtn);
+          addClass(chatBoard.leavePopup.leaveBtn, className.DISABLED);
+          let channelSet = this.getChannelSet(channelUrl);
+          if (channelSet) {
+            this.sb.channelLeave(channelSet.channel, () => {
+              chatBoard.removeChild(chatBoard.leavePopup);
+              removeClass(chatBoard.leavePopup.leaveBtn, className.DISABLED);
+              chatBoard.leavePopup = null;
+              chatBoard.closeBtn.click();
+            });
+          } else {
+            this.chatSection.closeChatBoard(chatBoard);
+          }
         }
-      });
+      );
     });
     this.chatSection.addClickEvent(chatBoard.memberBtn, () => {
       if (hasClass(chatBoard.memberBtn, className.ACTIVE)) {
@@ -591,33 +703,55 @@ class SBWidget {
         let index = this.chatSection.indexOfChatBord(channelUrl);
         this.popup.showMemberPopup(this.chatSection.self, index);
         let channelSet = this.getChannelSet(channelUrl);
-        this.popup.updateCount(this.popup.memberPopup.count, channelSet.channel.memberCount);
-        for (var i = 0; i < channelSet.channel.members.length; i++) {
+        this.popup.updateCount(
+          this.popup.memberPopup.count,
+          channelSet.channel.memberCount
+        );
+        for (let i = 0; i < channelSet.channel.members.length; i++) {
           let member = channelSet.channel.members[i];
-          let item = this.popup.createMemberItem(member, false, this.sb.isCurrentUser(member));
+          let item = this.popup.createMemberItem(
+            member,
+            false,
+            this.sb.isCurrentUser(member)
+          );
           this.popup.memberPopup.list.appendChild(item);
         }
       }
     });
-    this.chatSection.addClickEvent(chatBoard.inviteBtn, () => {
-      var _getUserList = (memberIds, loadmore) => {
+    /*     this.chatSection.addClickEvent(chatBoard.inviteBtn, () => {
+      let _getUserList = (memberIds, loadmore) => {
         this.sb.getUserList(userList => {
           if (!loadmore) {
             this.spinner.remove(this.popup.invitePopup.list);
           }
-          for (var i = 0; i < userList.length; i++) {
+          for (let i = 0; i < userList.length; i++) {
             let user = userList[i];
             if (memberIds.indexOf(user.userId) < 0) {
               let item = this.popup.createMemberItem(user, true);
               this.popup.addClickEvent(item, () => {
-                hasClass(item.select, className.ACTIVE)
-                  ? removeClass(item.select, className.ACTIVE)
-                  : addClass(item.select, className.ACTIVE);
-                let selectedUserCount = this.popup.getSelectedUserIds(this.popup.invitePopup.list).length;
-                this.popup.updateCount(this.popup.invitePopup.count, selectedUserCount);
-                selectedUserCount > 0
-                  ? removeClass(this.popup.invitePopup.inviteBtn, className.DISABLED)
-                  : addClass(this.popup.invitePopup.inviteBtn, className.DISABLED);
+                if (hasClass(item.select, className.ACTIVE)) {
+                  removeClass(item.select, className.ACTIVE);
+                } else {
+                  addClass(item.select, className.ACTIVE);
+                }
+                let selectedUserCount = this.popup.getSelectedUserIds(
+                  this.popup.invitePopup.list
+                ).length;
+                this.popup.updateCount(
+                  this.popup.invitePopup.count,
+                  selectedUserCount
+                );
+                if (selectedUserCount > 0) {
+                  removeClass(
+                    this.popup.invitePopup.inviteBtn,
+                    className.DISABLED
+                  );
+                } else {
+                  addClass(
+                    this.popup.invitePopup.inviteBtn,
+                    className.DISABLED
+                  );
+                }
               });
               this.popup.invitePopup.list.appendChild(item);
             }
@@ -644,12 +778,17 @@ class SBWidget {
           if (!hasClass(this.popup.invitePopup.inviteBtn, className.DISABLED)) {
             addClass(this.popup.invitePopup.inviteBtn, className.DISABLED);
             this.spinner.insert(this.popup.invitePopup.inviteBtn);
-            let selectedUserIds = this.popup.getSelectedUserIds(this.popup.invitePopup.list);
+            let selectedUserIds = this.popup.getSelectedUserIds(
+              this.popup.invitePopup.list
+            );
             let channelSet = this.getChannelSet(channelUrl);
             this.sb.inviteMember(channelSet.channel, selectedUserIds, () => {
               this.spinner.remove(this.popup.invitePopup.inviteBtn);
               this.closeInvitePopup();
-              this.listBoard.setChannelTitle(channelSet.channel.url, this.sb.getNicknamesString(channelSet.channel));
+              this.listBoard.setChannelTitle(
+                channelSet.channel.url,
+                this.sb.getNicknamesString(channelSet.channel)
+              );
               this.updateChannelInfo(chatBoard, channelSet.channel);
             });
           }
@@ -659,7 +798,7 @@ class SBWidget {
           _getUserList(memberIds, true);
         });
       }
-    });
+    }); */
     this.spinner.insert(chatBoard.content);
     this.sb.getChannelInfo(channelUrl, channel => {
       this.updateChannelInfo(chatBoard, channel);
@@ -673,13 +812,20 @@ class SBWidget {
       let listItem = this.listBoard.getChannelItem(channelUrl);
       if (!listItem) {
         listItem = this.createChannelItem(channel);
-        this.listBoard.list.insertBefore(listItem, this.listBoard.list.firstChild);
+        this.listBoard.list.insertBefore(
+          listItem,
+          this.listBoard.list.firstChild
+        );
       }
     });
   }
 
   updateChannelInfo(target, channel) {
-    this.chatSection.updateChatTop(target, this.sb.getMemberCount(channel), this.sb.getNicknamesString(channel));
+    this.chatSection.updateChatTop(
+      target,
+      this.sb.getMemberCount(channel),
+      this.sb.getNicknamesString(channel)
+    );
   }
 
   updateUnreadMessageCount(channel) {
@@ -696,23 +842,31 @@ class SBWidget {
     this.sb.getMessageList(channelSet, messageList => {
       let messageItems = messageList.slice();
       let tempTime;
-      for (var index = 0; index < messageList.length; index++) {
+      for (let index = 0; index < messageList.length; index++) {
         let message = messageList[index];
-        loadmore ? channelSet.message.unshift(message) : channelSet.message.push(message);
+        if (loadmore) {
+          channelSet.message.unshift(message);
+        } else {
+          channelSet.message.push(message);
+        }
 
         let time = this.sb.getMessageTime(message);
         if (time.indexOf(':') > -1) {
           time = TIME_STRING_TODAY;
         }
-        if (tempTime != time) {
+        if (tempTime !== time) {
           tempTime = time;
-          insertMessageInList(messageItems, messageItems.indexOf(message), new this.timeMessage(time));
+          insertMessageInList(
+            messageItems,
+            messageItems.indexOf(message),
+            new this.timeMessage(time)
+          );
         }
       }
 
       let scrollToBottom = false;
       if (!loadmore) {
-        if (tempTime != TIME_STRING_TODAY) {
+        if (tempTime !== TIME_STRING_TODAY) {
           messageItems.push(new this.timeMessage(TIME_STRING_TODAY));
         }
         scrollToBottom = true;
@@ -725,18 +879,26 @@ class SBWidget {
           });
         });
         this.chatSection.addKeyDownEvent(target.input, event => {
-          if (event.keyCode == KEY_DOWN_KR) {
+          if (event.keyCode === KEY_DOWN_KR) {
             this.chatSection.textKr = target.input.textContent;
           }
 
-          if (event.keyCode == KEY_DOWN_ENTER && !event.shiftKey) {
-            let textMessage = target.input.textContent || this.chatSection.textKr;
+          if (event.keyCode === KEY_DOWN_ENTER && !event.shiftKey) {
+            let textMessage =
+              target.input.textContent || this.chatSection.textKr;
             if (!isEmptyString(textMessage.trim())) {
-              this.sb.sendTextMessage(channelSet.channel, textMessage, message => {
-                this.messageReceivedAction(channelSet.channel, message);
-              });
+              this.sb.sendTextMessage(
+                channelSet.channel,
+                textMessage,
+                message => {
+                  this.messageReceivedAction(channelSet.channel, message);
+                }
+              );
             }
-            this.chatSection.clearInputText(target.input, channelSet.channel.url);
+            this.chatSection.clearInputText(
+              target.input,
+              channelSet.channel.url
+            );
             this.chatSection.textKr = '';
             channelSet.channel.endTyping();
           } else {
@@ -745,23 +907,30 @@ class SBWidget {
           this.chatSection.responsiveHeight(channelSet.channel.url);
         });
         this.chatSection.addKeyUpEvent(target.input, event => {
-          let isBottom = this.chatSection.isBottom(target.messageContent, target.list);
+          let isBottom = this.chatSection.isBottom(
+            target.messageContent,
+            target.list
+          );
           this.chatSection.responsiveHeight(channelSet.channel.url);
           if (event.keyCode == KEY_DOWN_ENTER && !event.shiftKey) {
-            this.chatSection.clearInputText(target.input, channelSet.channel.url);
+            this.chatSection.clearInputText(
+              target.input,
+              channelSet.channel.url
+            );
             if (isBottom) {
               this.chatSection.scrollToBottom(target.messageContent);
             }
           } else {
-            let textMessage = target.input.textContent || this.chatSection.textKr;
+            let textMessage =
+              target.input.textContent || this.chatSection.textKr;
             if (textMessage.length === 0) {
               channelSet.channel.endTyping();
             }
           }
         });
         this.chatSection.addPasteEvent(target.input, event => {
-          var clipboardData;
-          var pastedData;
+          let clipboardData;
+          let pastedData;
 
           event.stopPropagation();
           event.preventDefault();
@@ -775,11 +944,24 @@ class SBWidget {
       if (scrollEvent) {
         scrollEvent();
       }
-      this.setMessageItem(channelSet.channel, target, messageItems, loadmore, scrollToBottom);
+      this.setMessageItem(
+        channelSet.channel,
+        target,
+        messageItems,
+        loadmore,
+        scrollToBottom
+      );
     });
   }
 
-  setMessageItem(channel, target, messageList, loadmore, scrollToBottom, lastMessage) {
+  setMessageItem(
+    channel,
+    target,
+    messageList,
+    loadmore,
+    scrollToBottom,
+    lastMessage
+  ) {
     let firstChild = target.list.firstChild;
     let addScrollHeight = 0;
     let prevMessage;
@@ -787,7 +969,7 @@ class SBWidget {
     if (lastMessage && messageList[0] && !messageList[0].isTimeMessage) {
       prevMessage = lastMessage;
     }
-    for (var i = 0; i < messageList.length; i++) {
+    for (let i = 0; i < messageList.length; i++) {
       let message = messageList[i];
       if (message.isTimeMessage && message.isTimeMessage()) {
         newMessage = this.chatSection.createMessageItemTime(message.time);
@@ -798,13 +980,25 @@ class SBWidget {
           newMessage = this.chatSection.createAdminMessageItem(message);
         } else {
           // isUserMessage() || isFileMessage()
-          isContinue = prevMessage && prevMessage.sender ? message.sender.userId == prevMessage.sender.userId : false;
+          if (prevMessage && prevMessage.sender) {
+            isContinue = message.sender.userId === prevMessage.sender.userId;
+          }
           let isCurrentUser = this.sb.isCurrentUser(message.sender);
           let unreadCount = channel.getReadReceipt(message);
           if (message.isUserMessage()) {
-            newMessage = this.chatSection.createMessageItem(message, isCurrentUser, isContinue, unreadCount);
+            newMessage = this.chatSection.createMessageItem(
+              message,
+              isCurrentUser,
+              isContinue,
+              unreadCount
+            );
           } else if (message.isFileMessage()) {
-            newMessage = this.chatSection.createMessageItem(message, isCurrentUser, isContinue, unreadCount);
+            newMessage = this.chatSection.createMessageItem(
+              message,
+              isCurrentUser,
+              isContinue,
+              unreadCount
+            );
           }
         }
         prevMessage = message;
@@ -827,7 +1021,7 @@ class SBWidget {
 
   chatScrollEvent(target, channelSet) {
     this.chatSection.addScrollEvent(target.messageContent, () => {
-      if (target.messageContent.scrollTop == 0) {
+      if (target.messageContent.scrollTop === 0) {
         this.getMessageList(channelSet, target, true);
       }
     });
@@ -840,7 +1034,11 @@ class SBWidget {
     }
 
     let channelSet = this.activeChannelSetList.filter(obj => {
-      return isObject ? obj.channel == channel : obj.channel.url == channel;
+      if (isObject) {
+        return obj.channel === channel;
+      } else {
+        return obj.channel.url == channel;
+      }
     })[0];
 
     if (!channelSet && isObject) {
@@ -849,7 +1047,11 @@ class SBWidget {
         query: channel.createPreviousMessageListQuery(),
         message: []
       };
-      isLast ? this.activeChannelSetList.push(channelSet) : this.activeChannelSetList.unshift(channelSet);
+      if (isLast) {
+        this.activeChannelSetList.push(channelSet);
+      } else {
+        this.activeChannelSetList.unshift(channelSet);
+      }
     }
 
     return channelSet;
@@ -861,20 +1063,47 @@ class SBWidget {
       isObject = false;
     }
 
-    this.activeChannelSetList = this.activeChannelSetList.filter(function(obj) {
-      return isObject ? obj.channel != channel : obj.channel.url != channel;
+    this.activeChannelSetList = this.activeChannelSetList.filter(function (obj) {
+      if (isObject) {
+        return obj.channel !== channel;
+      } else {
+        return obj.channel.url !== channel;
+      }
     });
   }
 
   toggleBoard(isShow) {
     if (isShow) {
-      hide(addClass(removeClass(this.widgetBtn.self, className.FADE_IN), className.FADE_OUT));
-      show(addClass(removeClass(this.listBoard.self, className.FADE_OUT), className.FADE_IN));
+      hide(
+        addClass(
+          removeClass(this.widgetBtn.self, className.FADE_IN),
+          className.FADE_OUT
+        )
+      );
+      show(
+        addClass(
+          removeClass(this.listBoard.self, className.FADE_OUT),
+          className.FADE_IN
+        )
+      );
     } else {
-      hide(addClass(removeClass(this.listBoard.self, className.FADE_IN), className.FADE_OUT));
-      show(addClass(removeClass(this.widgetBtn.self, className.FADE_OUT), className.FADE_IN));
+      hide(
+        addClass(
+          removeClass(this.listBoard.self, className.FADE_IN),
+          className.FADE_OUT
+        )
+      );
+      show(
+        addClass(
+          removeClass(this.widgetBtn.self, className.FADE_OUT),
+          className.FADE_IN
+        )
+      );
     }
   }
 }
 
-window.sbWidget = new SBWidget();
+// window.sbWidget = new SBWidget();
+let sbWidget = new SBWidget();
+window.sbWidget = sbWidget;
+export default sbWidget;

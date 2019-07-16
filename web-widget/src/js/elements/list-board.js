@@ -1,5 +1,13 @@
 import { className, MAX_COUNT, MAX_FONT_SIZE } from '../consts.js';
-import { show, hide, hasClass, removeClass, addClass, isEmptyString, removeWhiteSpace } from '../utils.js';
+import {
+  show,
+  hide,
+  hasClass,
+  removeClass,
+  addClass,
+  isEmptyString,
+  removeWhiteSpace
+} from '../utils.js';
 import Element from './elements.js';
 
 const EMPTY_STRING = '';
@@ -8,7 +16,7 @@ const OPTION_TOOLTIP_TEXT = 'Log out';
 const NEW_CHAT_TOOLTIP_TEXT = 'New Message';
 
 const TITLE_TOP_LOGIN = 'SendBird Widget';
-const TITLE_TOP_CHANNEL = 'Channel List';
+const TITLE_TOP_CHANNEL = 'Messenger';
 const TITLE_LOGIN_USER_ID = 'USER ID';
 const TITLE_LOGIN_NICKNAME = 'NICKNAME';
 const TITLE_LOGIN_BTN = 'Start Chat';
@@ -39,7 +47,7 @@ class ListBoard extends Element {
     this.self = this.createDiv();
     this._setClass(this.self, [className.CHANNEL_BOARD]);
 
-    var boardTop = this.createDiv();
+    let boardTop = this.createDiv();
     this._setClass(boardTop, [className.BOARD_TOP]);
 
     this.topTitle = this.createDiv();
@@ -51,25 +59,25 @@ class ListBoard extends Element {
     this._setClass(this.btnMini, [className.BTN, className.IC_MINIMIZE]);
     boardTop.appendChild(this.btnMini);
 
-    this.btnOption = this.createDiv();
-    this._setClass(this.btnOption, [className.BTN, className.IC_OPTION]);
+    /*this.btnOption = this.createDiv();
+    this._setClass(this.btnOption, [className.BTN, className.IC_OPTION]);*/
 
     this.btnLogout = this.createDiv();
     this._setClass(this.btnLogout, [className.OPTION_MENU]);
-    var logoutText = this.createDiv();
+    let logoutText = this.createDiv();
     this._setClass(logoutText, [className.OPTION_CONTENT]);
     this._setContent(logoutText, OPTION_TOOLTIP_TEXT);
     this.btnLogout.appendChild(logoutText);
 
-    this.btnOption.appendChild(this.btnLogout);
-    boardTop.appendChild(this.btnOption);
+    /*this.btnOption.appendChild(this.btnLogout);
+    boardTop.appendChild(this.btnOption);*/
 
-    this.addOptionClickEvent();
+    // this.addOptionClickEvent();
 
     this.btnNewChat = this.createDiv();
     this._setClass(this.btnNewChat, [className.BTN, className.IC_NEW_CHAT]);
 
-    var newChatTooltip = this.createSpan();
+    let newChatTooltip = this.createSpan();
     this._setClass(newChatTooltip, [className.TOOLTIP]);
     this._setContent(newChatTooltip, NEW_CHAT_TOOLTIP_TEXT);
     this.btnNewChat.appendChild(newChatTooltip);
@@ -82,7 +90,7 @@ class ListBoard extends Element {
     this._setClickEvent(this.btnMini, action);
   }
 
-  addOptionClickEvent() {
+  /* addOptionClickEvent() {
     if (!this._getOptionEventLock()) {
       this._setClickEvent(this.btnOption, () => {
         if (hasClass(this.btnOption, className.ACTIVE)) {
@@ -93,7 +101,7 @@ class ListBoard extends Element {
         }
       });
     }
-  }
+  }*/
 
   addLogoutClickEvent(action) {
     this.setOptionEventLock(true);
@@ -103,12 +111,13 @@ class ListBoard extends Element {
   setOptionEventLock(value) {
     isLogoutClick = value;
   }
+
   _getOptionEventLock() {
     return isLogoutClick;
   }
 
   hideLogoutBtn() {
-    removeClass(this.btnOption, className.ACTIVE);
+    // removeClass(this.btnOption, className.ACTIVE);
     hide(this.btnLogout);
   }
 
@@ -120,10 +129,10 @@ class ListBoard extends Element {
     this.loginForm = this.createDiv();
     this._setClass(this.loginForm, [className.CONTENT, className.LOGIN_FORM]);
 
-    var userIdEl = this.createDiv();
+    let userIdEl = this.createDiv();
     this._setClass(userIdEl, [className.USER_ID]);
 
-    var idTitle = this.createDiv();
+    let idTitle = this.createDiv();
     this._setClass(idTitle, [className.TITLE]);
     this._setContent(idTitle, TITLE_LOGIN_USER_ID);
     userIdEl.appendChild(idTitle);
@@ -138,10 +147,10 @@ class ListBoard extends Element {
     userIdEl.appendChild(this.userId);
     this.loginForm.appendChild(userIdEl);
 
-    var userNicknameEl = this.createDiv();
+    let userNicknameEl = this.createDiv();
     this._setClass(userNicknameEl, [className.NICKNAME]);
 
-    var nicknameTitle = this.createDiv();
+    let nicknameTitle = this.createDiv();
     this._setClass(nicknameTitle, [className.TITLE]);
     this._setContent(nicknameTitle, TITLE_LOGIN_NICKNAME);
     userNicknameEl.appendChild(nicknameTitle);
@@ -167,7 +176,7 @@ class ListBoard extends Element {
       this.self.removeChild(this.listContent);
     }
     this._setContent(this.topTitle, TITLE_TOP_LOGIN);
-    hide(this.btnOption);
+    // hide(this.btnOption);
     hide(this.btnNewChat);
     this.self.appendChild(this.loginForm);
     this._toggleLoginBtn();
@@ -183,7 +192,10 @@ class ListBoard extends Element {
   }
 
   _toggleLoginBtn() {
-    if(!isEmptyString(removeWhiteSpace(this.userId.value)) && !isEmptyString(removeWhiteSpace(this.nickname.value))) {
+    if (
+      !isEmptyString(removeWhiteSpace(this.userId.value)) &&
+      !isEmptyString(removeWhiteSpace(this.nickname.value))
+    ) {
       if (this.btnLogin.innerHTML == TITLE_LOGIN_BTN) {
         this.enabledToggle(this.btnLogin, true);
       }
@@ -195,12 +207,15 @@ class ListBoard extends Element {
   _setUserId(value) {
     this.userId.value = value;
   }
+
   getUserId() {
     return this.userId.value;
   }
+
   _setNickname(value) {
     this.nickname.value = value;
   }
+
   getNickname() {
     return this.nickname.value;
   }
@@ -215,7 +230,10 @@ class ListBoard extends Element {
 
   createChannelListBoard() {
     this.listContent = this.createDiv();
-    this._setClass(this.listContent, [className.CONTENT, className.CHANNEL_LIST]);
+    this._setClass(this.listContent, [
+      className.CONTENT,
+      className.CHANNEL_LIST
+    ]);
 
     this.list = this.createUl();
     this.listContent.appendChild(this.list);
@@ -227,7 +245,7 @@ class ListBoard extends Element {
       this._cleanLoginForm();
     }
     this._setContent(this.topTitle, TITLE_TOP_CHANNEL);
-    show(this.btnOption);
+    // show(this.btnOption);
     show(this.btnNewChat);
     this.self.appendChild(this.listContent);
   }
@@ -248,37 +266,37 @@ class ListBoard extends Element {
     let message = args[4];
     let unread = args[5];
 
-    var item = this.createDiv();
+    let item = this.createDiv();
     this._setClass(item, [className.ITEM]);
-    var itemImg = this.createDiv();
+    let itemImg = this.createDiv();
     this._setClass(itemImg, [className.IMAGE]);
     this._setBackgroundImage(itemImg, coverUrl);
     item.appendChild(itemImg);
 
-    var itemContent = this.createDiv();
+    let itemContent = this.createDiv();
     this._setClass(itemContent, [className.CONTENT]);
 
-    var contentTop = this.createDiv();
+    let contentTop = this.createDiv();
     this._setClass(contentTop, [className.CONTENT_TOP]);
-    var contentTitle = this.createDiv();
+    let contentTitle = this.createDiv();
     this._setClass(contentTitle, [className.TITLE]);
     this._setContent(contentTitle, title);
     contentTop.appendChild(contentTitle);
 
-    var contentTime = this.createTime();
+    let contentTime = this.createTime();
     this._setContent(contentTime, time);
     contentTop.appendChild(contentTime);
 
     itemContent.appendChild(contentTop);
 
-    var contentBottom = this.createDiv();
+    let contentBottom = this.createDiv();
     this._setClass(contentBottom, [className.CONTENT_BOTTOM]);
-    var contentLastMessage = this.createDiv();
+    let contentLastMessage = this.createDiv();
     this._setClass(contentLastMessage, [className.LAST_MESSAGE]);
     this._setContent(contentLastMessage, message);
     contentBottom.appendChild(contentLastMessage);
 
-    var contentUnread = this.createSpan();
+    let contentUnread = this.createSpan();
     this.setUnreadCount(contentUnread, unread);
     contentBottom.appendChild(contentUnread);
 
@@ -286,7 +304,7 @@ class ListBoard extends Element {
 
     item.appendChild(itemContent);
 
-    var li = this.createLi();
+    let li = this.createLi();
     this._setDataset(li, 'channel-url', channelUrl);
     li.topTitle = contentTitle;
     li.time = contentTime;
@@ -309,14 +327,14 @@ class ListBoard extends Element {
   }
 
   _createEmptyItem() {
-    var emptyList = this.createDiv();
+    let emptyList = this.createDiv();
     this._setClass(emptyList, [className.EMPTY_ITEM]);
 
-    var emptyTitle = this.createDiv();
+    let emptyTitle = this.createDiv();
     this._setClass(emptyTitle, [className.TITLE]);
     this._setContent(emptyTitle, TITLE_EMPTY_ITEM);
 
-    var emptyBtn = this.createDiv();
+    let emptyBtn = this.createDiv();
     this._setClickEvent(emptyBtn, () => {
       this.btnNewChat.click();
     });
@@ -331,9 +349,13 @@ class ListBoard extends Element {
 
   setUnreadCount(target, count) {
     count = parseInt(count);
-    this._setContent(target, (count > 9) ? MAX_COUNT : count.toString());
-    this._setFontSize(target, (count > 9) ? MAX_FONT_SIZE : null);
-    (count > 0) ? show(target) : hide(target);
+    this._setContent(target, count > 9 ? MAX_COUNT : count.toString());
+    this._setFontSize(target, count > 9 ? MAX_FONT_SIZE : null);
+    if (count > 0) {
+      show(target);
+    } else {
+      hide(target);
+    }
   }
 
   addChannelClickEvent(target, action) {
@@ -346,8 +368,11 @@ class ListBoard extends Element {
 
   addListOnFirstIndex(target) {
     let items = this._getListItemsArray();
-    items.filter((item) => {
-      if (item.getAttribute('data-channel-url') == target.getAttribute('data-channel-url')) {
+    items.filter(item => {
+      if (
+        item.getAttribute('data-channel-url') ==
+        target.getAttribute('data-channel-url')
+      ) {
         this.list.removeChild(item);
       }
     });
@@ -357,7 +382,7 @@ class ListBoard extends Element {
   getChannelItem(channelUrl) {
     let items = this._getListItemsArray();
     let targetChannel;
-    for (var i = 0 ; i < items.length ; i++) {
+    for (let i = 0; i < items.length; i++) {
       let item = items[i];
       if (item.getAttribute('data-channel-url') == channelUrl) {
         targetChannel = item;

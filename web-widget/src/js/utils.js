@@ -3,8 +3,10 @@ const ANIMATION_REGEX = 'sb-fade.*';
 const DISPLAY_NONE = 'none';
 const DISPLAY_BLOCK = 'block';
 
-var hasClassRegex = (target, classNameRegex) => {
-  return new RegExp('(^| )' + classNameRegex + '( |$)', 'gi').test(target.className);
+let hasClassRegex = (target, classNameRegex) => {
+  return new RegExp('(^| )' + classNameRegex + '( |$)', 'gi').test(
+    target.className
+  );
 };
 
 export function hide(target) {
@@ -13,9 +15,13 @@ export function hide(target) {
       let hideAnimationEvent;
       target.addEventListener(
         ANIMATION_EVENT,
-        (hideAnimationEvent = function() {
+        (hideAnimationEvent = function () {
           target.style.cssText += `display: ${DISPLAY_NONE};`;
-          target.removeEventListener(ANIMATION_EVENT, hideAnimationEvent, false);
+          target.removeEventListener(
+            ANIMATION_EVENT,
+            hideAnimationEvent,
+            false
+          );
         })
       );
     } else {
@@ -26,7 +32,9 @@ export function hide(target) {
 
 export function show(target, displayType) {
   if (target) {
-    target.style.cssText += `display: ${displayType ? displayType : DISPLAY_BLOCK}`;
+    target.style.cssText += `display: ${
+      displayType ? displayType : DISPLAY_BLOCK
+      }`;
   }
 }
 
@@ -35,7 +43,9 @@ export function hasClass(...args) {
     if (target.classList) {
       return target.classList.contains(className);
     } else {
-      return new RegExp('(^| )' + className + '( |$)', 'gi').test(target.className);
+      return new RegExp('(^| )' + className + '( |$)', 'gi').test(
+        target.className
+      );
     }
   });
 }
@@ -61,7 +71,10 @@ export function removeClass(...args) {
       target.classList.remove(className);
     } else {
       target.className = target.className.replace(
-        new RegExp('(^|\\b)' + className.split(' ').join('|') + '(\\b|$)', 'gi'),
+        new RegExp(
+          '(^|\\b)' + className.split(' ').join('|') + '(\\b|$)',
+          'gi'
+        ),
         ''
       );
     }
@@ -78,8 +91,8 @@ export function removeWhiteSpace(target) {
 }
 
 export function getFullHeight(target) {
-  var height = target.offsetHeight;
-  var style = getComputedStyle(target);
+  let height = target.offsetHeight;
+  let style = getComputedStyle(target);
   height += parseInt(style.marginTop) + parseInt(style.marginBottom);
   return height;
 }
@@ -123,7 +136,7 @@ export function xssEscape(target) {
 }
 
 export function createNotificationSound() {
-  var sound = document.createElement('audio');
+  let sound = document.createElement('audio');
   sound.style.cssText += `display: none;`;
   sound.id = 'notifierSound';
   sound.src = 'https://dxstmhyqfqr1o.cloudfront.net/sound/SendBird-default.mp3';
@@ -136,7 +149,7 @@ export function requestNotification() {
   const edge = userAgent.indexOf('Edge/');
   if (msie < 0 && edge < 0) {
     if (window.Notification && Notification.permission !== 'granted') {
-      Notification.requestPermission(function(permission) {
+      Notification.requestPermission(function (permission) {
         if (Notification.permission !== permission) {
           Notification.permission = permission;
         }
@@ -146,23 +159,23 @@ export function requestNotification() {
 }
 
 export function setCookie(userId, nickname) {
-  var date = new Date();
+  let date = new Date();
   date.setDate(date.getDate() + 1);
-  var expires = date.toGMTString();
+  let expires = date.toGMTString();
   document.cookie = 'sendbirdUserId=' + userId + ';expires=' + expires;
   document.cookie = 'sendbirdNickname=' + nickname + ';expires=' + expires;
 }
 
 export function getCookie() {
-  var sendbirdUserInfo = {
+  let sendbirdUserInfo = {
     userId: '',
     nickname: ''
   };
-  var cUserId = 'sendbirdUserId=';
-  var cNickname = 'sendbirdNickname=';
-  var cList = document.cookie.split(';');
-  for (var i = 0; i < cList.length; i++) {
-    var c = cList[i];
+  let cUserId = 'sendbirdUserId=';
+  let cNickname = 'sendbirdNickname=';
+  let cList = document.cookie.split(';');
+  for (let i = 0; i < cList.length; i++) {
+    let c = cList[i];
     while (c.charAt(0) == ' ') {
       c = c.substring(1);
     }
@@ -178,7 +191,13 @@ export function getCookie() {
 export function deleteCookie() {
   const userInfo = getCookie();
   if (userInfo.userId) {
-    document.cookie = 'sendbirdUserId=' + userInfo.userId + ';expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-    document.cookie = 'sendbirdNickname=' + userInfo.nickname + ';expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie =
+      'sendbirdUserId=' +
+      userInfo.userId +
+      ';expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    document.cookie =
+      'sendbirdNickname=' +
+      userInfo.nickname +
+      ';expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   }
 }

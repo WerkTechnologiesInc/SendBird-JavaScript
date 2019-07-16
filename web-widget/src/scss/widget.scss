@@ -40,10 +40,12 @@
       @include border-radius(50%);
       @include sb-ani-spinner();
     }
+
     :nth-child(1) {
       @include reset();
       @include animation-delay(-0.32s);
     }
+
     :nth-child(2) {
       @include reset();
       margin: 0 6px;
@@ -77,6 +79,7 @@
       @include icon($icon-option-hover);
     }
   }
+
   .ic-option.active {
     @include icon($icon-option-hover);
   }
@@ -96,6 +99,7 @@
       @include icon($icon-close-hover);
     }
   }
+
   .ic-close.active {
     @include icon($icon-close-selected);
   }
@@ -107,6 +111,7 @@
       @include icon($icon-friend-list-hover);
     }
   }
+
   .ic-members.active {
     @include icon($icon-friend-list-selected);
   }
@@ -118,6 +123,7 @@
       @include icon($icon-friend-add-hover);
     }
   }
+
   .ic-invite.active {
     @include icon($icon-friend-add-selected);
   }
@@ -167,12 +173,12 @@
     height: 60px;
     cursor: pointer;
     @include border-radius(50%);
-    @include box-shadow(0 1px 6px rgba(0,0,0,0.06), 0 2px 32px rgba(0,0,0,0.16));
+    @include box-shadow(0 1px 6px rgba(0, 0, 0, 0.06), 0 2px 32px rgba(0, 0, 0, 0.16));
     background-color: $color-purple;
 
     @include hover {
       background-color: $color-widget-background-hover;
-      @include box-shadow(0 1px 9px rgba(0,0,0,0.28), 0 2px 32px rgba(0,0,0,0.16));
+      @include box-shadow(0 1px 9px rgba(0, 0, 0, 0.28), 0 2px 32px rgba(0, 0, 0, 0.16));
     }
 
     .notification {
@@ -190,7 +196,7 @@
       line-height: 18px;
       text-align: center;
       @include border-radius(50%);
-      @include box-shadow(0 1px 5px rgba(0,0,0,0.28));
+      @include box-shadow(0 1px 5px rgba(0, 0, 0, 0.28));
     }
   }
 
@@ -209,6 +215,7 @@
       @include box-shadow(0 1px 2px rgba(0, 0, 0, 0.25), 0 1px rgba(255, 255, 255, 0.75));
     }
   }
+
   .sb-common-btn.disabled {
     background-color: $color-button-background-disabled;
     border: 1px solid $color-button-border-disabled;
@@ -283,6 +290,7 @@
           height: 42px;
           background-color: transparent;
           cursor: pointer;
+
           .option-content {
             @include reset();
             position: absolute;
@@ -322,6 +330,7 @@
         width: 100%;
         padding-top: 30px;
       }
+
       .nickname {
         @include reset();
         width: 100%;
@@ -334,6 +343,7 @@
         color: $color-gray-darker;
         padding-bottom: 6px;
       }
+
       .input {
         @include reset();
         width: calc(98% - 16px);
@@ -366,24 +376,28 @@
 
         .sb-spinner {
           margin-top: 7px;
+
           div {
             width: 8px;
             height: 8px;
             margin-top: 4px;
             background-color: $color-button-spinner;
           }
+
           :nth-child(2) {
             margin: 0 4px;
           }
         }
       }
     }
+
     .content.login-form {
       @include reset();
       width: calc(100% - 24px);
       height: calc(100% - 37px);
       padding: 0 12px;
     }
+
     .content.channel-list {
       @include reset();
       overflow-y: scroll;
@@ -436,6 +450,7 @@
           height: 100%;
           margin-left: 8px;
         }
+
         .content-top {
           @include reset();
           width: 100%;
@@ -455,6 +470,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
           }
+
           time {
             @include reset();
             float: right;
@@ -463,6 +479,7 @@
             color: $color-gray-light;
           }
         }
+
         .content-bottom {
           @include reset();
           width: 100%;
@@ -481,6 +498,7 @@
             text-overflow: ellipsis;
             white-space: nowrap;
           }
+
           span {
             @include reset();
             display: none;
@@ -500,12 +518,14 @@
         .empty-item {
           @include reset();
           text-align: center;
+
           & > .title {
             @include reset();
             margin: 130px 0 16px 0;
             font-size: 14px;
             color: $color-gray-darker;
           }
+
           & > .new-chat-btn {
             @include reset();
             @extend .sb-common-btn;
@@ -529,6 +549,7 @@
           height: 12px;
           margin-top: 6px;
         }
+
         :nth-child(2) {
           margin: 0 6px;
         }
@@ -561,18 +582,21 @@
         width: 280px;
         height: 100%;
         position: absolute;
-        background-color: rgba(255, 255 ,255, 0.9);
+        background-color: rgba(255, 255, 255, 0.9);
         z-index: 1;
+
         & > .popup-top {
           @include reset();
           margin-top: 130px;
           text-align: center;
           color: $color-gray-darker;
         }
+
         & > div {
           @include reset();
           margin-top: 16px;
           text-align: center;
+
           .leave-btn {
             @extend .sb-common-btn;
             display: inline-block;
@@ -580,22 +604,27 @@
             width: 52px;
             height: 32px;
             line-height: 32px;
+
             .sb-spinner {
               line-height: 32px;
+
               div {
                 width: 8px;
                 height: 8px;
                 margin-top: 4px;
                 background-color: $color-button-spinner;
               }
+
               :nth-child(2) {
                 margin: 0 4px;
               }
             }
           }
+
           .leave-btn.disabled {
             cursor: default;
           }
+
           .cancel-btn {
             @extend .sb-common-btn;
             background-color: $color-chat-message-background;
@@ -667,8 +696,10 @@
           }
         }
       }
+
       .btn.ic-leave {
         margin-right: 3px;
+
         .tooltip {
           @extend .tooltip;
           width: 78px;
@@ -677,9 +708,11 @@
           left: -39px;
         }
       }
+
       .btn.ic-members {
         margin: 0 3px;
       }
+
       .btn.ic-members {
         .tooltip {
           @extend .tooltip;
@@ -689,6 +722,7 @@
           left: -37px;
         }
       }
+
       .btn.ic-invite {
         .tooltip {
           @extend .tooltip;
@@ -739,6 +773,7 @@
             }
           }
         }
+
         .user-item {
           @include reset();
           width: 100%;
@@ -756,6 +791,7 @@
             @include transform-translate(0, -50%);
             @include icon($icon-unchecked);
           }
+
           .user-select.active {
             @include icon($icon-checked);
           }
@@ -811,11 +847,13 @@
               margin-top: 4px;
               background-color: $color-button-spinner;
             }
+
             :nth-child(2) {
               margin: 0 4px;
             }
           }
         }
+
         .new-chat-btn.disabled {
           cursor: default;
         }
@@ -844,6 +882,7 @@
         font-size: 12px;
         color: $color-chat-system-message-color;
         line-height: 22px;
+
         .sb-spinner {
           top: initial;
           position: static;
@@ -852,11 +891,13 @@
           width: auto;
           text-align: left;
           margin-right: 8px;
+
           div {
             background-color: $color-typing-spinner;
             width: 6px;
             height: 6px;
           }
+
           :nth-child(2) {
             margin: 0 3px;
           }
@@ -890,16 +931,19 @@
           @include focus {
             outline: 0;
           }
+
           & > div {
             @include reset();
             height: 0px !important;
           }
         }
+
         .text:empty::before {
           font-size: 13px;
           content: $content-message-input-default;
           color: $color-chat-system-message-color;
         }
+
         .text:focus:empty::before {
           content: $content-message-input-empty;
         }
@@ -946,14 +990,17 @@
         @include reset();
         float: inherit;
       }
+
       .nickname {
         @include reset();
         font-size: 12px;
         color: $color-gray-dark;
       }
+
       .message-item {
         @include reset();
         float: inherit;
+
         .text {
           @include reset();
           display: inline-block;
@@ -970,6 +1017,7 @@
             font-size: 11px;
             font-weight: 300;
           }
+
           .preview-title {
             margin-top: 4px;
             font-size: 13px;
@@ -980,11 +1028,13 @@
             width: 180px;
             height: 13px;
           }
+
           .preview-description {
             margin-top: 4px;
             font-size: 11px;
             font-weight: 300;
           }
+
           .preview-iamge {
             width: 180px !important;
             height: 90px !important;
@@ -994,9 +1044,11 @@
             margin-top: 4px;
           }
         }
+
         .file-message {
           @include reset();
           display: inline-block;
+
           .image {
             @include reset();
             display: inline-block;
@@ -1009,6 +1061,7 @@
             @include border-radius(5px);
           }
         }
+
         .file {
           @include reset();
           display: inline-flex;
@@ -1029,6 +1082,7 @@
             height: 26px;
             @include icon($icon-file);
           }
+
           & > .file-text {
             @include reset();
             margin: 0 0 0 8px;
@@ -1043,6 +1097,7 @@
               white-space: nowrap;
               overflow: hidden;
             }
+
             & > .file-download {
               @include reset();
               font-size: 11px;
@@ -1051,6 +1106,7 @@
             }
           }
         }
+
         .unread {
           @include reset();
           display: none !important;
@@ -1064,18 +1120,23 @@
         }
       }
     }
+
     .message-set.user {
       float: right;
+
       .image,
       .nickname {
         display: none;
       }
+
       .message-item {
         float: inherit;
+
         .text {
           background: $color-purple;
           color: $color-white;
         }
+
         .image {
           display: inline-block;
           text-align: inherit;
@@ -1086,16 +1147,19 @@
           @include imageMessage();
           @include border-radius(5px);
         }
+
         .unread {
           display: inline-block !important;
         }
       }
     }
+
     .message-set.time {
       text-align: center;
       font-size: 11px;
       color: $color-gray-dark;
     }
+
     .message-set.admin-message {
       text-align: center;
       font-size: 12px;
@@ -1118,7 +1182,7 @@
       width: 260px;
       height: 360px;
       background-color: $color-white;
-      @include box-shadow(0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 60px rgba(0,0,0,0.35));
+      @include box-shadow(0 0 0 1px rgba(0, 0, 0, 0.1), 0 5px 60px rgba(0, 0, 0, 0.35));
       @include before {
         content: ' ';
         position: absolute;
@@ -1147,10 +1211,12 @@
 
           & > .sb-spinner {
             position: absolute;
+
             div {
               width: 12px;
               height: 12px;
             }
+
             :nth-child(2) {
               margin: 0 6px;
             }
@@ -1187,6 +1253,7 @@
               @include transform-translate(0, -50%);
               @include icon($icon-unchecked);
             }
+
             .user-select.active {
               @include icon($icon-checked);
             }
@@ -1198,6 +1265,7 @@
               position: absolute;
               @include icon($icon-member-me);
             }
+
             .image {
               @include reset();
               display: inline-block;
@@ -1206,6 +1274,7 @@
               height: 31px;
               @include icon($icon-member-1);
             }
+
             .nickname {
               @include reset();
               display: inline-block;
@@ -1311,25 +1380,30 @@
         line-height: 24px;
         letter-spacing: 0.85px;
         @include transform-translate(0, -50%);
+
         .sb-spinner {
           margin-top: 4px;
+
           div {
             width: 8px;
             height: 8px;
             margin-top: 4px;
             background-color: $color-button-spinner;
           }
+
           :nth-child(2) {
             margin: 0 4px;
           }
         }
       }
+
       .invite-btn.disabled {
         cursor: default;
       }
     }
 
   }
+
   .popup.members {
     .popup-body {
       @include before {
@@ -1338,9 +1412,11 @@
 
       & > .content {
         height: calc(100% - 36px - 2px);
+
         & > ul {
           height: 322px;
           margin: 2px 0 0 0;
+
           & > li {
             cursor: default;
           }

@@ -37,13 +37,19 @@ class Popup extends Element {
 
   showMemberPopup(chatSection, index) {
     chatSection.appendChild(this.memberPopup);
-    this._setRight(this.memberPopup, MEMBER_POPUP_DEFAULT + index * POPUP_DISTANCE);
+    this._setRight(
+      this.memberPopup,
+      MEMBER_POPUP_DEFAULT + index * POPUP_DISTANCE
+    );
     show(this.memberPopup);
   }
 
   showInvitePopup(chatSection, index) {
     chatSection.appendChild(this.invitePopup);
-    this._setRight(this.invitePopup, INVITE_POPUP_DEFAULT + index * POPUP_DISTANCE);
+    this._setRight(
+      this.invitePopup,
+      INVITE_POPUP_DEFAULT + index * POPUP_DISTANCE
+    );
     show(this.invitePopup);
   }
 
@@ -51,18 +57,18 @@ class Popup extends Element {
     this.memberPopup = this.createDiv();
     this._setClass(this.memberPopup, [className.POPUP, className.MEMBERS]);
 
-    var popupBody = this.createDiv();
+    let popupBody = this.createDiv();
     this._setClass(popupBody, [className.POPUP_BODY]);
 
-    var popupTop = this.createDiv();
+    let popupTop = this.createDiv();
     this._setClass(popupTop, [className.POPUP_TOP]);
 
-    var topTitle = this.createDiv();
+    let topTitle = this.createDiv();
     this._setClass(topTitle, [className.TITLE]);
     this._setContent(topTitle, TITLE_POPUP_MEMBER_LIST);
     popupTop.appendChild(topTitle);
 
-    var topCount = this.createDiv();
+    let topCount = this.createDiv();
     this._setClass(topCount, [className.COUNT]);
     this._setContent(topCount, '0');
     popupTop.appendChild(topCount);
@@ -73,10 +79,10 @@ class Popup extends Element {
 
     popupBody.appendChild(popupTop);
 
-    var popupContent = this.createDiv();
+    let popupContent = this.createDiv();
     this._setClass(popupContent, [className.CONTENT]);
 
-    var ul = this.createUl();
+    let ul = this.createUl();
     popupContent.appendChild(ul);
 
     popupBody.appendChild(popupContent);
@@ -88,15 +94,15 @@ class Popup extends Element {
 
   updateCount(target, count) {
     count = parseInt(count);
-    this._setContent(target, (count > 9) ? MAX_COUNT : count.toString());
+    this._setContent(target, count > 9 ? MAX_COUNT : count.toString());
   }
 
   createMemberItem(member, isInvite, isCurrentUser) {
-    var li = this.createLi();
-    var div = this.createDiv();
+    let li = this.createLi();
+    let div = this.createDiv();
 
     if (isInvite) {
-      var userSelect = this.createDiv();
+      let userSelect = this.createDiv();
       this._setClass(userSelect, [className.USER_SELECT]);
       this._setDataset(userSelect, 'user-id', member.userId);
       li.select = userSelect;
@@ -104,17 +110,17 @@ class Popup extends Element {
     }
 
     if (isCurrentUser) {
-      var userProfileMe = this.createDiv();
+      let userProfileMe = this.createDiv();
       this._setClass(userProfileMe, [className.IMAGE_ME]);
       div.appendChild(userProfileMe);
     }
 
-    var userProfile = this.createDiv();
+    let userProfile = this.createDiv();
     this._setClass(userProfile, [className.IMAGE]);
     this._setBackgroundImage(userProfile, member.profileUrl);
     div.appendChild(userProfile);
 
-    var userNickname = this.createDiv();
+    let userNickname = this.createDiv();
     this._setClass(userNickname, [className.NICKNAME]);
     this._setContent(userNickname, xssEscape(member.nickname));
     div.appendChild(userNickname);
@@ -127,34 +133,34 @@ class Popup extends Element {
     this.invitePopup = this.createDiv();
     this._setClass(this.invitePopup, [className.POPUP, className.INVITE]);
 
-    var popupBody = this.createDiv();
+    let popupBody = this.createDiv();
     this._setClass(popupBody, [className.POPUP_BODY]);
 
-    var popupContent = this.createDiv();
+    let popupContent = this.createDiv();
     this._setClass(popupContent, [className.CONTENT]);
 
-    var ul = this.createUl();
+    let ul = this.createUl();
     popupContent.appendChild(ul);
     popupBody.appendChild(popupContent);
-  
-    var popupBottom = this.createDiv();
+
+    let popupBottom = this.createDiv();
     this._setClass(popupBottom, [className.POPUP_BOTTOM]);
 
-    var bottomTitle = this.createDiv();
+    let bottomTitle = this.createDiv();
     this._setClass(bottomTitle, [className.TITLE]);
     this._setContent(bottomTitle, TITLE_POPUP_INVITE_LIST);
     popupBottom.appendChild(bottomTitle);
-  
-    var bottomCount = this.createDiv();
+
+    let bottomCount = this.createDiv();
     this._setClass(bottomCount, [className.COUNT]);
     this._setContent(bottomCount, '0');
     popupBottom.appendChild(bottomCount);
-  
-    var bottomInvite = this.createDiv();
+
+    let bottomInvite = this.createDiv();
     this._setClass(bottomInvite, [className.INVITE_BTN, className.DISABLED]);
     this._setContent(bottomInvite, TITLE_POPUP_INVITE_BTN);
     popupBottom.appendChild(bottomInvite);
-  
+
     popupBody.appendChild(popupBottom);
     this.invitePopup.content = popupContent;
     this.invitePopup.list = ul;
@@ -165,8 +171,8 @@ class Popup extends Element {
 
   getSelectedUserIds(target) {
     let items = target.querySelectorAll('.' + className.ACTIVE);
-    var userIds = [];
-    for (var i = 0 ; i < items.length ; i++) {
+    let userIds = [];
+    for (let i = 0; i < items.length; i++) {
       let item = items[i];
       userIds.push(item.getAttribute('data-user-id'));
     }
@@ -190,7 +196,6 @@ class Popup extends Element {
   addClickEvent(target, action) {
     this._setClickEvent(target, action);
   }
-
 }
 
 export { Popup as default };

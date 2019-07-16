@@ -1,9 +1,5 @@
-import {
-  MAX_COUNT
-} from './consts.js';
-import {
-  xssEscape
-} from './utils.js';
+import { MAX_COUNT } from './consts.js';
+import { xssEscape } from './utils.js';
 
 const GLOBAL_HANDLER = 'GLOBAL_HANDLER';
 const GET_MESSAGE_LIMIT = 20;
@@ -86,13 +82,20 @@ class Sendbird {
   }
 
   createNewChannel(userIds, action) {
-    this.sb.GroupChannel.createChannelWithUserIds(userIds, true, '', '', '', function (channel, error) {
-      if (error) {
-        console.error(error);
-        return;
+    this.sb.GroupChannel.createChannelWithUserIds(
+      userIds,
+      true,
+      '',
+      '',
+      '',
+      function (channel, error) {
+        if (error) {
+          console.error(error);
+          return;
+        }
+        action(channel);
       }
-      action(channel);
-    });
+    );
   }
 
   inviteMember(channel, userIds, action) {
@@ -129,7 +132,10 @@ class Sendbird {
       channelSet.query = channelSet.channel.createPreviousMessageListQuery();
     }
     if (channelSet.query.hasMore && !channelSet.query.isLoading) {
-      channelSet.query.load(GET_MESSAGE_LIMIT, false, function (messageList, error) {
+      channelSet.query.load(GET_MESSAGE_LIMIT, false, function (
+        messageList,
+        error
+      ) {
         if (error) {
           console.error(error);
           return;
@@ -149,10 +155,12 @@ class Sendbird {
   }
 
   sendFileMessage(channel, file, action) {
-    let thumbSize = [{
-      maxWidth: 160,
-      maxHeight: 160
-    }];
+    let thumbSize = [
+      {
+        maxWidth: 160,
+        maxHeight: 160
+      }
+    ];
     channel.sendFileMessage(file, '', '', thumbSize, (message, error) => {
       if (error) {
         console.error(error);
@@ -165,10 +173,21 @@ class Sendbird {
   /*
   User
    */
-  getUserList(action) {
+  getUserList(action, filter) {
     if (!this.userListQuery) {
       this.userListQuery = this.sb.createApplicationUserListQuery();
+      if (filter) {
+        const { metaType = '', metaValues = [], userIds = [] } = filter;
+        if ((metaType, metaValues)) {
+          this.userListQuery.metaDataKeyFilter = metaType;
+          this.userListQuery.metaDataValuesFilter = metaValues;
+        }
+        if (userIds) {
+          this.userListQuery.userIdsFilter = userIds;
+        }
+      }
     }
+
     if (this.userListQuery.hasNext && !this.userListQuery.isLoading) {
       this.userListQuery.next((userList, error) => {
         if (error) {
@@ -192,6 +211,7 @@ class Sendbird {
     let readReceiptFunc = args[5];
     let userLeftFunc = args[6];
     let userJoinFunc = args[7];
+    let userInvitedFunc = args[8];
 
     let channelHandler = new this.sb.ChannelHandler();
     channelHandler.onMessageReceived = function (channel, message) {
@@ -218,6 +238,9 @@ class Sendbird {
     channelHandler.onUserJoined = function (channel, user) {
       userJoinFunc(channel, user);
     };
+    channelHandler.onUserReceivedInvitation = function (channel) {
+      userInvitedFunc(channel);
+    };
     this.sb.addChannelHandler(GLOBAL_HANDLER, channelHandler);
   }
 
@@ -241,17 +264,31 @@ class Sendbird {
 
   getLastMessage(channel) {
     if (channel.lastMessage) {
-      return channel.lastMessage.isUserMessage() || channel.lastMessage.isAdminMessage() ?
-        channel.lastMessage.message :
-        channel.lastMessage.name;
+      return channel.lastMessage.isUserMessage() ||
+      channel.lastMessage.isAdminMessage()
+        ? channel.lastMessage.message
+        : channel.lastMessage.name;
     }
     return '';
   }
 
   getMessageTime(message) {
-    const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+    const months = [
+      'JAN',
+      'FEB',
+      'MAR',
+      'APR',
+      'MAY',
+      'JUN',
+      'JUL',
+      'AUG',
+      'SEP',
+      'OCT',
+      'NOV',
+      'DEC'
+    ];
 
-    var _getDay = val => {
+    let _getDay = val => {
       let day = parseInt(val);
       if (day == 1) {
         return day + 'st';
@@ -264,14 +301,14 @@ class Sendbird {
       }
     };
 
-    var _checkTime = val => {
+    let _checkTime = val => {
       return +val < 10 ? '0' + val : val;
     };
 
     if (message) {
       const LAST_MESSAGE_YESTERDAY = 'YESTERDAY';
-      var _nowDate = new Date();
-      var _date = new Date(message.createdAt);
+      let _nowDate = new Date();
+      let _date = new Date(message.createdAt);
       if (_nowDate.getDate() - _date.getDate() == 1) {
         return LAST_MESSAGE_YESTERDAY;
       } else if (
@@ -279,7 +316,9 @@ class Sendbird {
         _nowDate.getMonth() == _date.getMonth() &&
         _nowDate.getDate() == _date.getDate()
       ) {
-        return _checkTime(_date.getHours()) + ':' + _checkTime(_date.getMinutes());
+        return (
+          _checkTime(_date.getHours()) + ':' + _checkTime(_date.getMinutes())
+        );
       } else {
         return months[_date.getMonth()] + ' ' + _getDay(_date.getDate());
       }
@@ -296,7 +335,4 @@ class Sendbird {
   }
 }
 
-export {
-  Sendbird as
-  default
-};
+export { Sendbird as default };

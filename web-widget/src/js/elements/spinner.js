@@ -12,8 +12,7 @@ class Spinner extends Element {
   _create() {
     this.self = this.createDiv();
     this._setClass(this.self, [className.SPINNER]);
-    var i;
-    for (i = 0 ; i < 3 ; i++) {
+    for (let i = 0; i < 3; i++) {
       this.self.appendChild(this.createDiv());
     }
   }

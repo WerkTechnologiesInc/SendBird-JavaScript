@@ -46,7 +46,9 @@ class ChatSection extends Element {
 
   responsiveSize(isMax, action) {
     if (isMax !== undefined) {
-      this.self.style.cssText += `right: ${isMax ? CHAT_SECTION_RIGHT_MIN : CHAT_SECTION_RIGHT_MAX}`;
+      this.self.style.cssText += `right: ${
+        isMax ? CHAT_SECTION_RIGHT_MIN : CHAT_SECTION_RIGHT_MAX
+        }`;
     }
     action();
   }
@@ -73,91 +75,97 @@ class ChatSection extends Element {
   Chat
    */
   createChatBoard(channelUrl, isLast) {
-    let chatBoard = this.createDiv();
+    const chatBoard = this.createDiv();
     this._setClass(chatBoard, [className.CHAT_BOARD]);
     chatBoard.id = channelUrl ? channelUrl : '';
 
-    var chatTop = this.createDiv();
+    const chatTop = this.createDiv();
     this._setClass(chatTop, [className.TOP]);
 
-    var chatTitle = this.createDiv();
+    const chatTitle = this.createDiv();
     this._setClass(chatTitle, [className.TITLE]);
     this._setContent(chatTitle, TITLE_CHAT_TITLE_DEFAULT);
     chatBoard.topTitle = chatTitle;
     chatTop.appendChild(chatTitle);
 
-    var chatMemberCount = this.createDiv();
+    const chatMemberCount = this.createDiv();
     this._setClass(chatMemberCount, [className.COUNT]);
     this._setContent(chatMemberCount, MEMBER_COUNT_DEFAULT);
     chatBoard.count = chatMemberCount;
     chatTop.appendChild(chatMemberCount);
 
-    var topBtnClose = this.createDiv();
+    const topBtnClose = this.createDiv();
     this._setClass(topBtnClose, [className.BTN, className.IC_CLOSE]);
     chatBoard.closeBtn = topBtnClose;
     chatTop.appendChild(topBtnClose);
 
-    var topBtnLeave = this.createDiv();
+    const topBtnLeave = this.createDiv();
     this._setClass(topBtnLeave, [className.BTN, className.IC_LEAVE]);
     chatBoard.leaveBtn = topBtnLeave;
 
-    var tooltipLeave = this.createSpan();
+    const tooltipLeave = this.createSpan();
     this._setClass(tooltipLeave, [className.TOOLTIP]);
     this._setContent(tooltipLeave, TOOLTIP_CHANNEL_LEAVE);
 
     topBtnLeave.appendChild(tooltipLeave);
     chatTop.appendChild(topBtnLeave);
 
-    var topBtnMembers = this.createDiv();
+    const topBtnMembers = this.createDiv();
     this._setClass(topBtnMembers, [className.BTN, className.IC_MEMBERS]);
     chatBoard.memberBtn = topBtnMembers;
 
-    var tooltipMember = this.createSpan();
+    let tooltipMember = this.createSpan();
     this._setClass(tooltipMember, [className.TOOLTIP]);
     this._setContent(tooltipMember, TOOLTIP_MEMBER_LIST);
 
     topBtnMembers.appendChild(tooltipMember);
     chatTop.appendChild(topBtnMembers);
 
-    var topBtnInvite = this.createDiv();
-    this._setClass(topBtnInvite, [className.BTN, className.IC_INVITE]);
-    chatBoard.inviteBtn = topBtnInvite;
 
-    var tooltipInvite = this.createSpan();
-    this._setClass(tooltipInvite, [className.TOOLTIP]);
-    this._setContent(tooltipInvite, TOOLTIP_INVITE_MEMBER);
+    /*     const topBtnInvite = this.createDiv();
+        this._setClass(topBtnInvite, [className.BTN, className.IC_INVITE]);
+        chatBoard.inviteBtn = topBtnInvite;
 
-    topBtnInvite.appendChild(tooltipInvite);
-    chatTop.appendChild(topBtnInvite);
+        const tooltipInvite = this.createSpan();
+        this._setClass(tooltipInvite, [className.TOOLTIP]);
+        this._setContent(tooltipInvite, TOOLTIP_INVITE_MEMBER);
+
+        topBtnInvite.appendChild(tooltipInvite);
+        chatTop.appendChild(topBtnInvite); */
+
 
     chatBoard.appendChild(chatTop);
 
-    var chatContent = this.createDiv();
+    const chatContent = this.createDiv();
     this._setClass(chatContent, [className.CONTENT]);
     chatBoard.content = chatContent;
     chatBoard.appendChild(chatContent);
 
-    isLast ? this.self.appendChild(chatBoard) : this.moveToFirstIndex(chatBoard);
+    if (isLast) {
+      this.self.appendChild(chatBoard);
+    } else {
+      this.moveToFirstIndex(chatBoard);
+    }
     return chatBoard;
   }
 
   addLeavePopup(target) {
     if (!target.leavePopup) {
-      var leavePopup = this.createDiv();
+      const leavePopup = this.createDiv();
       this._setClass(leavePopup, [className.LEAVE_POPUP]);
 
-      var leaveTitle = this.createDiv();
+      const leaveTitle = this.createDiv();
       this._setClass(leaveTitle, [className.POPUP_TOP]);
       this._setContent(leaveTitle, TITLE_CHAT_LEAVE_POPUP);
       leavePopup.appendChild(leaveTitle);
 
-      var div = this.createDiv();
-      var leaveBtn = this.createDiv();
+      const div = this.createDiv();
+      const leaveBtn = this.createDiv();
       this._setClass(leaveBtn, [className.LEAVE_BTN]);
       this._setContent(leaveBtn, TITLE_CHAT_LEAVE_BTN);
       div.appendChild(leaveBtn);
 
-      var cancelBtn = this.createDiv();
+      const cancelBtn = this.createDiv();
       this._setClickEvent(cancelBtn, () => {
         target.removeChild(leavePopup);
         target.leavePopup = null;
@@ -180,7 +188,7 @@ class ChatSection extends Element {
 
   removeMemberPopup() {
     let items = this.self.querySelectorAll('.' + className.CHAT_BOARD);
-    for (var i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       let item = items[i];
       removeClass(item.memberBtn, className.ACTIVE);
     }
@@ -188,7 +196,7 @@ class ChatSection extends Element {
 
   removeInvitePopup() {
     let items = this.self.querySelectorAll('.' + className.CHAT_BOARD);
-    for (var i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       let item = items[i];
       removeClass(item.inviteBtn, className.ACTIVE);
     }
@@ -206,9 +214,9 @@ class ChatSection extends Element {
   }
 
   getChatBoard(channelUrl) {
-    let items = this.self.querySelectorAll('.' + className.CHAT_BOARD);
+    const items = this.self.querySelectorAll('.' + className.CHAT_BOARD);
     let targetBoard;
-    for (var i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       let item = items[i];
       if (item.id == channelUrl) {
         targetBoard = item;
@@ -219,10 +227,10 @@ class ChatSection extends Element {
   }
 
   indexOfChatBord(channelUrl) {
-    var items = this.self.querySelectorAll('.' + className.CHAT_BOARD);
+    const items = this.self.querySelectorAll('.' + className.CHAT_BOARD);
     let chatBoard = this.getChatBoard(channelUrl);
     let index = -1;
-    for (var i = 0; i < items.length; i++) {
+    for (let i = 0; i < items.length; i++) {
       if (items[i] == chatBoard) {
         index = i;
         break;
@@ -237,32 +245,32 @@ class ChatSection extends Element {
   }
 
   createMessageContent(target) {
-    var chatContent = this.createDiv();
+    const chatContent = this.createDiv();
     this._setClass(chatContent, [className.CONTENT]);
 
-    var messageContent = this.createDiv();
+    const messageContent = this.createDiv();
     this._setClass(messageContent, [className.MESSAGE_CONTENT]);
 
-    var messageList = this.createDiv();
+    const messageList = this.createDiv();
     this._setClass(messageList, [className.MESSAGE_LIST]);
     messageContent.appendChild(messageList);
     chatContent.appendChild(messageContent);
 
-    var typingMessage = this.createDiv();
+    const typingMessage = this.createDiv();
     this._setClass(typingMessage, [className.TYPING]);
     chatContent.appendChild(typingMessage);
 
-    var contentInput = this.createDiv();
+    const contentInput = this.createDiv();
     this._setClass(contentInput, [className.INPUT]);
 
-    var chatText = this.createTextInput();
+    const chatText = this.createTextInput();
     contentInput.appendChild(chatText);
 
-    var chatFile = this.createLabel();
+    const chatFile = this.createLabel();
     this._setClass(chatFile, [className.FILE]);
     chatFile.setAttribute('for', 'file_' + target.id);
 
-    var chatFileInput = this.createInput();
+    const chatFileInput = this.createInput();
     chatFileInput.type = 'file';
     chatFileInput.name = 'file';
     chatFileInput.id = 'file_' + target.id;
@@ -282,15 +290,15 @@ class ChatSection extends Element {
   }
 
   createTextInput() {
-    var chatText = this.createDiv();
+    const chatText = this.createDiv();
     this._setClass(chatText, [className.TEXT]);
     chatText.setAttribute('contenteditable', true);
     return chatText;
   }
 
   clearInputText(target, channelUrl) {
-    let items = target.querySelectorAll(this.tagName.DIV);
-    for (var i = 0; i < items.length; i++) {
+    const items = target.querySelectorAll(this.tagName.DIV);
+    for (let i = 0; i < items.length; i++) {
       let item = items[i];
       item.remove();
     }
@@ -319,14 +327,19 @@ class ChatSection extends Element {
   }
 
   responsiveHeight(channelUrl) {
-    let targetBoard = this.getChatBoard(channelUrl);
+    const targetBoard = this.getChatBoard(channelUrl);
     let messageContent = targetBoard.messageContent;
-    let changeHeight = getFullHeight(targetBoard.typing) + getFullHeight(targetBoard.input);
-    this._setHeight(messageContent, MESSAGE_CONTENT_HEIGHT_DEFAULT - (changeHeight - MESSAGE_INPUT_HEIGHT_DEFAULT));
+    let changeHeight =
+      getFullHeight(targetBoard.typing) + getFullHeight(targetBoard.input);
+    this._setHeight(
+      messageContent,
+      MESSAGE_CONTENT_HEIGHT_DEFAULT -
+      (changeHeight - MESSAGE_INPUT_HEIGHT_DEFAULT)
+    );
   }
 
   showTyping(channel, spinner) {
-    let targetBoard = this.getChatBoard(channel.url);
+    const targetBoard = this.getChatBoard(channel.url);
     let typing = targetBoard.typing;
     if (!channel.isTyping()) {
       this._setContent(typing, EMPTY_STRING);
@@ -336,7 +349,9 @@ class ChatSection extends Element {
       spinner.insert(typing);
       this._addContent(
         typing,
-        typingUser.length > 1 ? MESSAGE_TYPING_SEVERAL : xssEscape(typingUser[0].nickname) + MESSAGE_TYPING_MEMBER
+        typingUser.length > 1
+          ? MESSAGE_TYPING_SEVERAL
+          : xssEscape(typingUser[0].nickname) + MESSAGE_TYPING_MEMBER
       );
       show(typing);
     }
@@ -354,38 +369,55 @@ class ChatSection extends Element {
     let resizeWidth = width * scale;
     let resizeHeight = height * scale;
 
-    this._setBackgroundSize(imageTarget, resizeWidth + 'px ' + resizeHeight + 'px');
+    this._setBackgroundSize(
+      imageTarget,
+      resizeWidth + 'px ' + resizeHeight + 'px'
+    );
     this._setWidth(imageTarget, resizeWidth);
     this._setHeight(imageTarget, resizeHeight);
     return { resizeWidth: resizeWidth, resizeHeight: resizeHeight };
   }
 
   setImageSize(target, message) {
-    this._setBackgroundImage(target, message.thumbnails.length > 0 ? message.thumbnails[0].url : message.url);
+    this._setBackgroundImage(
+      target,
+      message.thumbnails.length > 0 ? message.thumbnails[0].url : message.url
+    );
     if (message.thumbnails.length > 0) {
-      this._imageResize(target, message.thumbnails[0].real_width, message.thumbnails[0].real_height);
+      this._imageResize(
+        target,
+        message.thumbnails[0].real_width,
+        message.thumbnails[0].real_height
+      );
     } else {
-      var img = new Image();
+      const img = new Image();
       img.addEventListener('load', res => {
-        res.path
-          ? this._imageResize(target, res.path[0].width, res.path[0].height)
-          : this._imageResize(target, res.target.width, res.target.height);
+        if (res.path) {
+          this._imageResize(target, res.path[0].width, res.path[0].height);
+        } else {
+          this._imageResize(target, res.target.width, res.target.height);
+        }
       });
       img.src = message.url;
     }
   }
 
   createMessageItem(message, isCurrentUser, isContinue, unreadCount) {
-    var messageSet = this.createDiv();
+    const messageSet = this.createDiv();
     messageSet.id = message.messageId;
-    this._setClass(messageSet, isCurrentUser ? [className.MESSAGE_SET, className.USER] : [className.MESSAGE_SET]);
+    this._setClass(
+      messageSet,
+      isCurrentUser
+        ? [className.MESSAGE_SET, className.USER]
+        : [className.MESSAGE_SET]
+    );
     if (isContinue) {
       messageSet.style.cssText += `margin-top: ${MARGIN_TOP_MESSAGE}`;
     }
 
-    var senderImg = this.createDiv();
+    const senderImg = this.createDiv();
     this._setClass(senderImg, [className.IMAGE]);
-    var senderProfile = message.sender.profileUrl;
+    let senderProfile = message.sender.profileUrl;
     if (isContinue) {
       senderProfile = '';
       senderImg.style.cssText += `height: ${MESSAGE_NONE_IMAGE_HEIGHT};`;
@@ -393,10 +425,10 @@ class ChatSection extends Element {
     senderImg.style.cssText += `background-image: url(${senderProfile});`;
     messageSet.appendChild(senderImg);
 
-    var messageContent = this.createDiv();
+    const messageContent = this.createDiv();
     this._setClass(messageContent, [className.MESSAGE]);
 
-    var senderNickname = this.createDiv();
+    const senderNickname = this.createDiv();
     this._setClass(senderNickname, [className.NICKNAME]);
     this._setContent(senderNickname, xssEscape(message.sender.nickname));
     if (isContinue) {
@@ -404,46 +436,50 @@ class ChatSection extends Element {
     }
     messageContent.appendChild(senderNickname);
 
-    var messageItem = this.createDiv();
+    const messageItem = this.createDiv();
     this._setClass(messageItem, [className.MESSAGE_ITEM]);
 
-    var itemText = this.createDiv();
+    const itemText = this.createDiv();
     if (message.isUserMessage()) {
       this._setClass(itemText, [className.TEXT]);
-      var urlexp = new RegExp(
+      let urlexp = new RegExp(
         '(http|https)://[a-z0-9-_]+(.[a-z0-9-_]+)+([a-z0-9-.,@?^=%&;:/~+#]*[a-z0-9-@?^=%&;/~+#])?',
         'i'
       );
-      var _message = message.message;
+      let _message = message.message;
       if (urlexp.test(_message)) {
-        _message =
-          '<a href="' +
-          _message +
-          (isCurrentUser
-            ? '" target="_blank" style="color: #FFFFFF;">'
-            : '" target="_blank" style="color: #444444;">') +
-          _message +
-          '</a>';
+        _message = `<a href="${_message}${
+          isCurrentUser
+            ? ' target="_blank" style="color: #FFFFFF;">'
+            : ' target="_blank" style="color: #444444;">'
+          }${_message}
+					'</a>`;
+
         if (message.customType === 'url_preview') {
           let previewData = JSON.parse(message.data);
 
-          var _siteName = this.createDiv();
+          const _siteName = this.createDiv();
           this._setClass(_siteName, [className.PREVIEW_NAME]);
           this._setContent(_siteName, '@' + previewData.site_name);
 
-          var _title = this.createDiv();
+          const _title = this.createDiv();
           this._setClass(_title, [className.PREVIEW_TITLE]);
           this._setContent(_title, previewData.title);
 
-          var _description = this.createDiv();
+          const _description = this.createDiv();
           this._setClass(_description, [className.PREVIEW_DESCRIPTION]);
           this._setContent(_description, previewData.description);
 
-          var _image = this.createDiv();
+          const _image = this.createDiv();
           this._setClass(_image, [className.PREVIEW_IMAGE]);
           this._setBackgroundImage(_image, previewData.image);
 
-          _message += '<hr>' + _siteName.outerHTML + _title.outerHTML + _description.outerHTML + _image.outerHTML;
+          _message +=
+            '<hr>' +
+            _siteName.outerHTML +
+            _title.outerHTML +
+            _description.outerHTML +
+            _image.outerHTML;
         }
       } else {
         _message = xssEscape(_message);
@@ -462,16 +498,24 @@ class ChatSection extends Element {
         let video = this.createVideo();
         video.controls = true;
         video.preload = 'auto';
-        var resize = { resizeWidth: 160, resizeHeight: 160 };
+        let resize = { resizeWidth: 160, resizeHeight: 160 };
         if (message.thumbnails && message.thumbnails.length > 0) {
           video.poster = message.thumbnails[0].url;
-          resize = this._imageResize(video, message.thumbnails[0].real_width, message.thumbnails[0].real_height);
+          resize = this._imageResize(
+            video,
+            message.thumbnails[0].real_width,
+            message.thumbnails[0].real_height
+          );
           video.width = resize.resizeWidth;
           video.height = resize.resizeHeight;
         } else {
-          var _self = this;
-          video.addEventListener('loadedmetadata', function() {
-            resize = _self._imageResize(video, this.videoWidth, this.videoHeight);
+          const _self = this;
+          video.addEventListener('loadedmetadata', function () {
+            resize = _self._imageResize(
+              video,
+              this.videoWidth,
+              this.videoHeight
+            );
             video.width = resize.resizeWidth;
             video.height = resize.resizeHeight;
           });
@@ -480,7 +524,7 @@ class ChatSection extends Element {
         itemText.appendChild(video);
       } else {
         this._setClass(itemText, [className.FILE_MESSAGE]);
-        let file = this.createA();
+        const file = this.createA();
         file.href = message.url;
         file.target = 'blank';
         if (message.type.match(/^image\/.+$/)) {
@@ -488,18 +532,18 @@ class ChatSection extends Element {
           this.setImageSize(file, message);
         } else {
           this._setClass(file, [className.FILE]);
-          var fileIcon = this.createDiv();
+          const fileIcon = this.createDiv();
           this._setClass(fileIcon, [className.FILE_ICON]);
 
-          var fileText = this.createDiv();
+          const fileText = this.createDiv();
           this._setClass(fileText, [className.FILE_TEXT]);
 
-          var fileName = this.createDiv();
+          const fileName = this.createDiv();
           this._setClass(fileName, [className.FILE_NAME]);
           this._setContent(fileName, xssEscape(message.name));
           fileText.appendChild(fileName);
 
-          var fileDownload = this.createDiv();
+          const fileDownload = this.createDiv();
           this._setClass(fileDownload, [className.FILE_DOWNLOAD]);
           this._setContent(fileDownload, TEXT_FILE_DOWNLOAD);
           fileText.appendChild(fileDownload);
@@ -511,7 +555,7 @@ class ChatSection extends Element {
       }
     }
 
-    var itemUnread = this.createDiv();
+    let itemUnread = this.createDiv();
     this._setClass(itemUnread, [className.UNREAD]);
     this.setUnreadCount(itemUnread, unreadCount);
     messageSet.unread = itemUnread;
@@ -530,26 +574,36 @@ class ChatSection extends Element {
   }
 
   createAdminMessageItem(message) {
-    var admin = this.createDiv();
+    const admin = this.createDiv();
     this._setClass(admin, [className.MESSAGE_SET, className.ADMIN_MESSAGE]);
     this._setContent(admin, xssEscape(message.message));
     return admin;
   }
 
   setUnreadCount(target, count) {
-    count = parseInt(count);
-    this._setContent(target, count > 9 ? MAX_COUNT : count == 0 ? '' : count.toString());
-    count > 0 ? show(target, DISPLAY_TYPE_INLINE_BLOCK) : hide(target);
+    let countCopy = parseInt(count);
+    this._setContent(
+      target,
+      countCopy > 9 ? MAX_COUNT : countCopy == 0 ? '' : countCopy.toString()
+    );
+    if (countCopy > 0) {
+      show(target, DISPLAY_TYPE_INLINE_BLOCK);
+    } else {
+      hide(target);
+    }
   }
 
   updateReadReceipt(channelSet, target) {
-    var items = target.querySelectorAll('.' + className.MESSAGE_SET);
-    for (var j = 0; j < channelSet.message.length; j++) {
+    const items = target.querySelectorAll('.' + className.MESSAGE_SET);
+    for (let j = 0; j < channelSet.message.length; j++) {
       let message = channelSet.message[j];
-      for (var i = 0; i < items.length; i++) {
+      for (let i = 0; i < items.length; i++) {
         let item = items[i];
         if (item.id == message.messageId) {
-          this.setUnreadCount(item.unread, channelSet.channel.getReadReceipt(message));
+          this.setUnreadCount(
+            item.unread,
+            channelSet.channel.getReadReceipt(message)
+          );
           break;
         }
       }
@@ -557,25 +611,28 @@ class ChatSection extends Element {
   }
 
   createMessageItemTime(date) {
-    var time = this.createDiv();
+    const time = this.createDiv();
     this._setClass(time, [className.MESSAGE_SET, className.TIME]);
     this._setContent(time, date);
     return time;
   }
 
   createNewChatBoard(target) {
-    var chatContent = this.createDiv();
+    const chatContent = this.createDiv();
     this._setClass(chatContent, [className.CONTENT]);
 
-    var userContent = this.createDiv();
+    const userContent = this.createDiv();
     this._setClass(userContent, [className.USER_CONTENT]);
     chatContent.appendChild(userContent);
 
-    var contentBottom = this.createDiv();
+    const contentBottom = this.createDiv();
     this._setClass(contentBottom, [className.CONTENT_BOTTOM]);
 
-    var contentBottomBtn = this.createDiv();
-    this._setClass(contentBottomBtn, [className.NEW_CHAT_BTN, className.DISABLED]);
+    const contentBottomBtn = this.createDiv();
+    this._setClass(contentBottomBtn, [
+      className.NEW_CHAT_BTN,
+      className.DISABLED
+    ]);
     this._setContent(contentBottomBtn, TITLE_START_CHAT_BTN);
     contentBottom.appendChild(contentBottomBtn);
     chatContent.appendChild(contentBottom);
@@ -590,30 +647,30 @@ class ChatSection extends Element {
 
   createUserList(target) {
     if (target.querySelectorAll(this.tagName.UL).length == 0) {
-      var userList = this.createUl();
+      const userList = this.createUl();
       target.list = userList;
       target.appendChild(userList);
     }
   }
 
   createUserListItem(user) {
-    var li = this.createLi();
+    const li = this.createLi();
 
-    var userItem = this.createDiv();
+    const userItem = this.createDiv();
     this._setClass(userItem, [className.USER_ITEM]);
 
-    var userSelect = this.createDiv();
+    const userSelect = this.createDiv();
     this._setClass(userSelect, [className.USER_SELECT]);
     this._setDataset(userSelect, 'user-id', user.userId);
     li.select = userSelect;
     userItem.appendChild(userSelect);
 
-    var userProfile = this.createDiv();
+    const userProfile = this.createDiv();
     this._setClass(userProfile, [className.IMAGE]);
     this._setBackgroundImage(userProfile, user.profileUrl);
     userItem.appendChild(userProfile);
 
-    var userNickname = this.createDiv();
+    const userNickname = this.createDiv();
     this._setClass(userNickname, [className.NICKNAME]);
     this._setContent(userNickname, xssEscape(user.nickname));
     userItem.appendChild(userNickname);
@@ -623,9 +680,9 @@ class ChatSection extends Element {
   }
 
   getSelectedUserIds(target) {
-    let items = target.querySelectorAll('.' + className.ACTIVE);
-    var userIds = [];
-    for (var i = 0; i < items.length; i++) {
+    const items = target.querySelectorAll('.' + className.ACTIVE);
+    const userIds = [];
+    for (let i = 0; i < items.length; i++) {
       let item = items[i];
       userIds.push(item.getAttribute('data-user-id'));
     }
