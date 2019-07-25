@@ -61,7 +61,7 @@ class SBWidget {
     }
   }
 
-  startWithConnect(appId, userId, nickname, callback) {
+  startWithConnect(appId, userId, nickname, callback, action) {
     if (!window.SendBird) {
       console.error(ERROR_MESSAGE_SDK);
       return;
@@ -73,7 +73,7 @@ class SBWidget {
         this._initClickEvent(event);
       });
       this._init();
-      this._start(appId);
+      this._start(appId, action);
       this._connect(userId, nickname, callback);
     } else {
       console.error(ERROR_MESSAGE);
@@ -203,7 +203,7 @@ class SBWidget {
     }
   }
 
-  _start(appId) {
+  _start(appId, action) {
     this.sb = new Sendbird(appId);
 
     this.popup.addCloseBtnClickEvent(() => {
@@ -242,6 +242,7 @@ class SBWidget {
             chatBoard.userContent
           );
           this.sb.createNewChannel(selectedUserIds, channel => {
+            this.inviteUsersToChannel(channel, action);
             chatBoard.parentNode.removeChild(chatBoard);
             this._connectChannel(channel.url, true);
             this.listBoard.checkEmptyList();
@@ -321,6 +322,62 @@ class SBWidget {
         this.responsiveChatSection.bind(this)
       );
     }
+  }
+
+  inviteUsersToChannel(channel, action) {
+    const { members } = channel;
+    const applicationUsers = this.sb.sb.createApplicationUserListQuery();
+
+    applicationUsers.next((users, error) => {
+      if (error) console.error(error);
+      const usersIds = users.map(user => user.userId);
+      const inviter = this.sb.sb.currentUser;
+
+      members.forEach((member) => {
+        let isAgencyMaster = member.metaData.usertype === "agency"
+          && member.metaData.accountType === "master";
+
+        if (member.connectionStatus !== this.sb.sb.User.ONLINE) {
+          const memberOffline = {
+            ...member,
+            inviter
+          };
+          if (action) action(memberOffline);
+          console.log("User is offline", memberOffline);
+        }
+
+        if (isAgencyMaster) {
+          // if agency has agencyUsers send them invitation to channel
+          const agencyUsersList = JSON.parse(member.metaData.agencyUsers);
+          const appUsersToInvite = agencyUsersList.filter(el => usersIds.includes(el));
+
+          appUsersToInvite.forEach(user => {
+            const userObject = users.find(el => el.userId === user);
+            let userOffline = {
+              ...userObject,
+              inviter
+            };
+
+            if (userObject.connectionStatus !== this.sb.sb.User.ONLINE) {
+              if (action) action(userOffline);
+              console.log("User is offline", userOffline);
+            }
+          });
+
+
+          if (appUsersToInvite.length > 0) {
+            channel.inviteWithUserIds(appUsersToInvite, (info, err) => {
+              if (err) console.error(err);
+              console.log("Invited"); // eslint-disable-line
+            });
+          }
+        }
+      });
+    });
+  }
+
+  getUserConnectionStatus() {
+
   }
 
   _connect(userId, nickname, callback) {
@@ -410,7 +467,7 @@ class SBWidget {
       this.listBoard.checkEmptyList();
     }
     this.listBoard.addListOnFirstIndex(target);
-    this.showChannel(channel.url);
+    // this.showChannel(channel.url);
 
     let targetBoard = this.chatSection.getChatBoard(channel.url);
 
@@ -430,6 +487,7 @@ class SBWidget {
   }
 
   messageReceivedAction(channel, message) {
+    console.log(channel, message); // eslint-disable-line
     let target = this.listBoard.getChannelItem(channel.url);
     if (!target) {
       target = this.createChannelItem(channel);
@@ -636,6 +694,16 @@ class SBWidget {
     return item;
   }
 
+  createNewChannelWithIds(selectedUserIds) {
+    let chatBoard = this.chatSection.createChatBoard(NEW_CHAT_BOARD_ID);
+
+    this.sb.createNewChannel(selectedUserIds, channel => {
+      chatBoard.parentNode.removeChild(chatBoard);
+      this._connectChannel(channel.url, true);
+      this.listBoard.checkEmptyList();
+    });
+  }
+
   closePopup() {
     this.closeMemberPopup();
     this.closeInvitePopup();
@@ -658,7 +726,6 @@ class SBWidget {
 
   showChannel(channelUrl) {
     this._connectChannel(channelUrl, false);
-    console.log(channelUrl);
   }
 
   _connectChannel(channelUrl, doNotCall) {
